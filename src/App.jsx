@@ -16,8 +16,8 @@ class App extends Component {
       messages: []
     }
 
-
     this.addMessage = this.addMessage.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -28,7 +28,7 @@ class App extends Component {
     };
 
     this.ws.onmessage = event => {
-      console.log('Here is an event', event); // testing
+      console.log('Here is an event: ', event); // testing
 
       let data = JSON.parse(event.data);
       let messages = [...this.state.messages, data];
@@ -49,6 +49,11 @@ class App extends Component {
     // this.setState({ messages: this.state.messages.concat(newMessageObj) });
   }
 
+  handleChange(inputName) {
+    let theUser = {name: inputName}
+    this.setState({currentUser: theUser});
+  }
+
 
 
   render() {
@@ -57,7 +62,7 @@ class App extends Component {
       <div>
         <NavBar />
         <MessageList messages={this.state.messages} />
-        <ChatBar addMessage={this.addMessage} currentUser={this.state.currentUser} />
+        <ChatBar addMessage={this.addMessage} currentUser={this.state.currentUser} handleChange={this.handleChange} />
       </div>
     );
   }
