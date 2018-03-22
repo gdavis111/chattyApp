@@ -10,8 +10,9 @@ class App extends Component {
     this.ws = new WebSocket("ws://localhost:3001/");
 
     this.state = {
-      currentUser: {name: "Anonymous"}, // if currentUser is not specified, the user is Anonymous
-      messages: []
+      currentUser:  { name: "Anonymous", color: 'random' }, // if currentUser is not specified, the user is Anonymous
+      messages: [],
+      userCount: 0
     }
     this.addMessage = this.addMessage.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -19,25 +20,44 @@ class App extends Component {
 
   componentDidMount() {
     this.ws.onopen = function (event) {
-      console.log("Connected to the websocket Server, Cool!");
+      console.log("Connected to the websocket Server!");
     };
 
     this.ws.onmessage = event => {
-      console.log('Here is an event: ', event); // testing
-
-
-      /* !!!!!!!!!!!!!! TODO: make if/else that handles login or logout type? !!!!!!!!!!!!!!!!!! */
-
       let data = JSON.parse(event.data);
-
-      let messages = [...this.state.messages, data];
-      this.setState({ messages });
+      // if someone logs in, create login message object and send to server
+      if (data.type === 'incomingLogin') {
+        this.setState({userCount: data.userCount});
+        let newLoginObj = {
+          type: 'postLogin',
+          content: `${this.state.currentUser.name} has just logged in.`
+        }
+        this.ws.send(JSON.stringify(newLoginObj));
+        // if someone logs out, create logout message object and send to server
+      } else if (data.type === 'incomingLogout') {
+        this.setState({userCount: data.userCount});
+        // if data.type is not incomingLogout but has userCount, set userCount and add as message
+      } else if (data.userCount) {
+        this.setState({userCount: data.userCount})
+        let messages = [...this.state.messages, data];
+        this.setState({ messages });
+      } else {
+        let messages = [...this.state.messages, data];
+        this.setState({ messages });
+      }
     };
+    window.onbeforeunload = (event) => {
+      let newLogoutObj = {
+        type: 'postLogout',
+        content: `${this.state.currentUser.name} has just logged out.`
+      }
+      this.ws.send(JSON.stringify(newLogoutObj));
+    }
   }
 
   addMessage(msg) {
     const newMessageObj = {
-      type: 'postMessage', //new
+      type: 'postMessage',
       username: this.state.currentUser.name,
       content: msg
     }
@@ -45,8 +65,8 @@ class App extends Component {
   }
 
   handleChange(inputName) {
-    let oldUser = this.state.currentUser.name; //new
-    const newUserObj = { //new
+    let oldUser = this.state.currentUser.name;
+    const newUserObj = {
       type: 'postNotification',
       content: `${oldUser} has changed their name to ${inputName}`
     }
@@ -60,7 +80,7 @@ class App extends Component {
     console.log("Rendering <App />")
     return (
       <div>
-        <NavBar  />
+        <NavBar userCount={this.state.userCount} />
         <MessageList messages={this.state.messages} />
         <ChatBar addMessage={this.addMessage} currentUser={this.state.currentUser} handleChange={this.handleChange} />
       </div>
