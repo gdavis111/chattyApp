@@ -55,11 +55,22 @@ class App extends Component {
     }
   }
 
+  /* FUNCTION TO GET RANDOM COLOUR */
+  getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
   addMessage(msg) {
     const newMessageObj = {
       type: 'postMessage',
       username: this.state.currentUser.name,
-      content: msg
+      content: msg,
+      color: this.state.currentUser.color
     }
     this.ws.send(JSON.stringify(newMessageObj));
   }
@@ -71,9 +82,10 @@ class App extends Component {
       content: `${oldUser} has changed their name to ${inputName}`
     }
     this.ws.send(JSON.stringify(newUserObj));
-    // change state so messages will show from new name
-    let theUser = {name: inputName}
+    /* adding colour to user and changing state to include name and random colour */
+    let theUser = {name: inputName, color: this.getRandomColor()}
     this.setState({currentUser: theUser});
+    console.log(this.state);
   }
 
   render() {

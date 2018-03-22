@@ -46,7 +46,8 @@ wss.on('connection', (ws) => {
         type: 'incomingMessage',
         id: uuidv4(),
         username: incomingMsg.username,
-        content: incomingMsg.content
+        content: incomingMsg.content,
+        color: incomingMsg.color
       }
       // Send to each client that is online
       wss.broadcast(JSON.stringify(msgObj));
