@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 
-
 class Message extends Component {
   render() {
     console.log("Rendering <Message />")
-
+    /* if statement to differentiate html based on if the incoming is a message or a notifcation */
     if (this.props.msgType === 'incomingMessage') {
       return (
             <div className="message">

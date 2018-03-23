@@ -55,7 +55,7 @@ class App extends Component {
     }
   }
 
-  /* FUNCTION TO GET RANDOM COLOUR */
+  /* Function to get random colour that will be applied to a user */
   getRandomColor() {
     const letters = '0123456789ABCDEF';
     let color = '#';
@@ -65,6 +65,7 @@ class App extends Component {
     return color;
   }
 
+  /* function that runs when user hits enter after typing a message - passed to ChatBar.jsx */
   addMessage(msg) {
     const newMessageObj = {
       type: 'postMessage',
@@ -75,6 +76,7 @@ class App extends Component {
     this.ws.send(JSON.stringify(newMessageObj));
   }
 
+  /* function that runs when user hits enter after typing a new name - passed to ChatBar.jsx */
   handleChange(inputName) {
     let oldUser = this.state.currentUser.name;
     const newUserObj = {
@@ -88,6 +90,7 @@ class App extends Component {
     console.log(this.state);
   }
 
+  /* Passing information/functions to NavBar, MessageList and Chatbar */
   render() {
     console.log("Rendering <App />")
     return (
