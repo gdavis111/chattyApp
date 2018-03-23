@@ -12,7 +12,7 @@ A single page, multi-user, live chatroom app that updates for all users whenever
 
 ## Final Product
 
-!["Screenshot of the app with some coversation"]
+!["Screenshot of the app with some coversation"](https://github.com/gdavis111/chattyApp/blob/master/docs/examplechat.png?raw=true)
 
 
 ## Dependencies
